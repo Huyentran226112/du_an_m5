@@ -223,6 +223,7 @@ figure {
 
 img {
     vertical-align: middle;
+    width: 100%;
     border-style: none
 }
 
@@ -1619,6 +1620,8 @@ pre code {
 .table td,
 .table th {
     padding: .75rem;
+    height: 100px;
+     width: 500px;
     vertical-align: top;
     border-top: 1px solid #dee2e6
 }

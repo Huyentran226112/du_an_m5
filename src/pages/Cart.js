@@ -1,7 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import LayoutMaster from "../layouts/LayoutMaster";
 import Banner_cart from "../components/Banner_cart";
+import CartModel from "../models/CartModel";
+import { useDispatch } from "react-redux";
 function Cart(props) {
+  const image = "http://127.0.0.1:8000/public/assets/product/";
+  const [products, setProducts] = useState([]);
+  const totalAll = products.reduce((total, product) => {
+    return total + product.price * product.quantity;
+  }, 0);
+  useEffect(() => {
+    CartModel.getAll()
+      .then((res) => {
+        setProducts(res);
+        // console.log(res);
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }, []);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  function handleQuantityChange(productId, newQuantity) {
+    const updatedProducts = products.map((product) => {
+      if (product.id === productId) {
+        return { ...product, quantity: newQuantity };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  }
+  const handleDelete = (id) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?");
+    if (isConfirmed) {
+
+    CartModel.remove(id)
+      .then((res) => {
+        // Tìm sản phẩm trong state products để xóa
+        const updatedProducts = products.filter
+        ((product) => product.id !== id);
+        // Cập nhật danh sách sản phẩm
+        alert('ok. Đã xóa rồi nha !!')
+        setProducts(updatedProducts);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Đã có lỗi xảy ra");
+      });
+    }
+  };
+  
   
   return (
     <LayoutMaster>
@@ -14,235 +63,99 @@ function Cart(props) {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th scope="col">Product</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Quantity</th>
-                      <th scope="col">Total</th>
+                      <th>stt</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Ảnh </th>
+                      <th>Giá</th>
+                      <th>Số lượng</th>
+                      <th>Tổng tiền </th>
+                      <th>xóa sản phẩm </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <div className="media">
-                          <div className="d-flex">
-                            <img src="img/cart.jpg" alt="" />
-                          </div>
-                          <div className="media-body">
-                            <p>Minimalistic shop for multipurpose use</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$360.00</h5>
-                      </td>
-                      <td>
-                        <div className="product_count">
-                          <input
-                            type="text"
-                            name="qty"
-                            id="sst"
-                            maxLength={12}
-                            defaultValue={1}
-                            title="Quantity:"
-                            className="input-text qty"
+                    {products.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.id}</td>
+                        <td>{product.name}</td>
+                        <td>
+                          <img
+                            className="mini-img"
+                            src={`${product.image}`}
+                            alt="img"
                           />
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                            className="increase items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-up" />
-                          </button>
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
-                            className="reduced items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-down" />
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$720.00</h5>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="media">
-                          <div className="d-flex">
-                            <img src="img/cart.jpg" alt="" />
-                          </div>
-                          <div className="media-body">
-                            <p>Minimalistic shop for multipurpose use</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$360.00</h5>
-                      </td>
-                      <td>
-                        <div className="product_count">
-                          <input
-                            type="text"
-                            name="qty"
-                            id="sst"
-                            maxLength={12}
-                            defaultValue={1}
-                            title="Quantity:"
-                            className="input-text qty"
-                          />
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                            className="increase items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-up" />
-                          </button>
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
-                            className="reduced items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-down" />
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$720.00</h5>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="media">
-                          <div className="d-flex">
-                            <img src="img/cart.jpg" alt="" />
-                          </div>
-                          <div className="media-body">
-                            <p>Minimalistic shop for multipurpose use</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$360.00</h5>
-                      </td>
-                      <td>
-                        <div className="product_count">
-                          <input
-                            type="text"
-                            name="qty"
-                            id="sst"
-                            maxLength={12}
-                            defaultValue={1}
-                            title="Quantity:"
-                            className="input-text qty"
-                          />
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                            className="increase items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-up" />
-                          </button>
-                          <button
-                            onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) && sst > 0 ) result.value--;return false;"
-                            className="reduced items-count"
-                            type="button"
-                          >
-                            <i className="lnr lnr-chevron-down" />
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <h5>$720.00</h5>
-                      </td>
-                    </tr>
-                    <tr className="bottom_button">
-                      <td>
-                        <a className="gray_btn" href="#">
-                          Update Cart
-                        </a>
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <div className="cupon_text d-flex align-items-center">
-                          <input type="text" placeholder="Coupon Code" />
-                          <a className="primary-btn" href="#">
-                            Apply
-                          </a>
-                          <a className="gray_btn" href="#">
-                            Close Coupon
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h5>Subtotal</h5>
-                      </td>
-                      <td>
-                        <h5>$2160.00</h5>
-                      </td>
-                    </tr>
-                    <tr className="shipping_area">
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h5>Shipping</h5>
-                      </td>
-                      <td>
-                        <div className="shipping_box">
-                          <ul className="list">
-                            <li>
-                              <a href="#">Flat Rate: $5.00</a>
-                            </li>
-                            <li>
-                              <a href="#">Free Shipping</a>
-                            </li>
-                            <li>
-                              <a href="#">Flat Rate: $10.00</a>
-                            </li>
-                            <li className="active">
-                              <a href="#">Local Delivery: $2.00</a>
-                            </li>
-                          </ul>
-                          <h6>
-                            Calculate Shipping{" "}
-                            <i
-                              className="fa fa-caret-down"
-                              aria-hidden="true"
+                        </td>
+                        <td>{product.price.toLocaleString()}vnd </td>
+                        {/* <td>{product.quantity}</td> */}
+                        <td>
+                          <div className="quantity">
+                            {/* <button
+                              className="minus"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.id,
+                                  product.quantity - 1
+                                )
+                              }
+                            >
+                              -
+                            </button> */}
+                            <input
+                              type="number"
+                              name="qty"
+                              id={`quantity-${product.id}`}
+                              value={product.quantity}
+                              min="1"
+                              onChange={(e) =>
+                                handleQuantityChange(product.id, e.target.value)
+                              }
                             />
-                          </h6>
-                          <select className="shipping_select">
-                            <option value={1}>Bangladesh</option>
-                            <option value={2}>India</option>
-                            <option value={4}>Pakistan</option>
-                          </select>
-                          <select className="shipping_select">
-                            <option value={1}>Select a State</option>
-                            <option value={2}>Select a State</option>
-                            <option value={4}>Select a State</option>
-                          </select>
-                          <input type="text" placeholder="Postcode/Zipcode" />
-                          <a className="gray_btn" href="#">
-                            Update Details
-                          </a>
-                        </div>
+                            {/* <button
+                              className="plus"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  product.id,
+                                  product.quantity + 1
+                                )
+                              }
+                            >
+                            
+                            </button> */}
+                          </div>
+                        </td>
+                        <td>
+                          {(product.quantity * product.price).toLocaleString()}
+                          vnd
+                        </td>
+
+                        {/* <button type="submit" className="btn btn-primary mb-2">
+                          bay màu
+                        </button> */}
+                         <button id="button2" onClick={ () => handleDelete(product.id)}>xóa</button>
+                      </tr>
+                    ))}
+
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h5>Tổng tiền </h5>
+                      </td>
+                      <td>
+                        <h5> {totalAll.toLocaleString()}vnd </h5>
                       </td>
                     </tr>
+
                     <tr className="out_button_area">
                       <td></td>
                       <td></td>
                       <td></td>
                       <td>
                         <div className="checkout_btn_inner d-flex align-items-center">
-                          <a className="gray_btn" href="#">
-                            Continue Shopping
+                          <a className="gray_btn" href="/shop">
+                            Tiếp tục mua sắm
                           </a>
-                          <a className="primary-btn" href="#">
-                            Proceed to checkout
+                          <a className="primary-btn" href="/Checkout">
+                            Đặt hàng
                           </a>
                         </div>
                       </td>
