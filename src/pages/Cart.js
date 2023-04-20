@@ -154,7 +154,7 @@ function Cart(props) {
                           <a className="gray_btn" href="/shop">
                             Tiếp tục mua sắm
                           </a>
-                          <a className="primary-btn" href="/Checkout">
+                          <a className="primary-btn" href="/Login">
                             Đặt hàng
                           </a>
                         </div>
